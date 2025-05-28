@@ -1,5 +1,5 @@
-import jax
-import jax.numpy as jnp
+# DQN network definition using Flax
+
 from flax import linen as nn
 
 class DQN(nn.Module):
