@@ -1,7 +1,7 @@
 # jax-dqn-scalable
 Scalable Deep Q-Learning implementation in JAX
 
-**Work in Progress** - Building scalable DQN with JAX 
+**Work in Progress** - Building scalable DQN with JAX
 
 ## Features (Planned)
 - [ ] JAX-based neural network implementation
