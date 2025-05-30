@@ -1,4 +1,3 @@
-import jax.numpy as jnp 
 import gymnasium as gym
 
 class CartPoleWrapper:
@@ -12,7 +11,5 @@ class CartPoleWrapper:
         return observation
     
     def step(self, action):
-        obs, reward, terminated, truncated, info = self.env.step(action)
-        done = terminated or truncated  
-        return obs, reward, done, info
-
+        obs, reward, terminated, truncated, info = self.env.step(action) 
+        return obs, reward, terminated, truncated, info

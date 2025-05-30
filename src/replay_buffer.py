@@ -6,8 +6,8 @@ class ReplayBuffer:
         self.storage = [] # storage 
         self.position = 0 # where to add next item        
     
-    def add(self, state, action, reward, next_state, done):
-        experience = (state, action, reward, next_state, done)
+    def add(self, state, action, reward, next_state, terminated, truncated):
+        experience = (state, action, reward, next_state, terminated, truncated)
 
         if len(self.storage) < self.capacity:
             self.storage.append(experience)

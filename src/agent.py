@@ -27,9 +27,10 @@ class DQNAgent:
         else:
             q_values = self.network.apply(self.params, state)  
             action = jnp.argmax(q_values)
+        return action
 
-    def store_experience(self, state, action, reward, next_state, done):
-        self.replay_buffer.add(state, action, reward, next_state, done)
+    def store_experience(self, state, action, reward, next_state, terminated, truncated):
+        self.replay_buffer.add(state, action, reward, next_state, terminated, truncated)
 
     
     def train_step(self, batch_size=32):
@@ -43,7 +44,8 @@ class DQNAgent:
         actions = jnp.array([experience[1] for experience in batch])
         rewards = jnp.array([experience[2] for experience in batch])
         next_states = jnp.array([experience[3] for experience in batch])
-        dones = jnp.array([experience[4] for experience in batch])
+        terminated = jnp.array([experience[4] for experience in batch])
+        truncated = jnp.array([experience[5] for experience in batch])
 
       
         def loss_function(params): #compute how far off the Q-network is from the Bellman target.
@@ -55,7 +57,7 @@ class DQNAgent:
 
             # Q-learning target: 
             gamma = 0.99 # future discount factor
-            target_q = rewards + gamma * max_next_q_value * (1-dones) 
+            target_q = rewards + gamma * max_next_q_value * (1-terminated) 
                             
             # mean loss 
             loss = jnp.mean((current_q - target_q)**2)
