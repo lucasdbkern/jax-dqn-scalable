@@ -3,6 +3,7 @@ import jax.numpy as jnp
 import optax
 from src.dqn_network import DQN
 from src.replay_buffer import ReplayBuffer
+import numpy as np
 
 class DQNAgent:
     def __init__(self, state_dim, action_dim, learning_rate = 1e-3):
@@ -13,7 +14,8 @@ class DQNAgent:
 
         # initialising network parameters
         key = jax.random.PRNGKey(0)
-        dummy_input = jnp.zeros((state_dim))
+        
+        dummy_input = jnp.zeros((state_dim), dtype=jnp.float32)
         self.params = self.network.init(key, dummy_input)
         self.opt_state = self.optimizer.init(self.params)
 
@@ -22,12 +24,12 @@ class DQNAgent:
         self.action_dim = action_dim
 
     def select_action(self, state, epsilon=0.1):
-        if jnp.random.uniform()< epsilon:
-            action = jnp.random.choice(self.action_dim)
+        if np.random.uniform()< epsilon:
+            action = np.random.choice(self.action_dim)
         else:
             q_values = self.network.apply(self.params, state)  
-            action = jnp.argmax(q_values)
-        return action
+            action = np.argmax(q_values)
+        return int(action)
 
     def store_experience(self, state, action, reward, next_state, terminated, truncated):
         self.replay_buffer.add(state, action, reward, next_state, terminated, truncated)
@@ -40,19 +42,19 @@ class DQNAgent:
         batch = self.replay_buffer.sample(batch_size)
 
         # unpack batch 
-        states = jnp.array([experience[0] for experience in batch])
-        actions = jnp.array([experience[1] for experience in batch])
-        rewards = jnp.array([experience[2] for experience in batch])
-        next_states = jnp.array([experience[3] for experience in batch])
-        terminated = jnp.array([experience[4] for experience in batch])
-        truncated = jnp.array([experience[5] for experience in batch])
+        states = jnp.array([experience[0] for experience in batch]).astype(jnp.float32)
+        actions = jnp.array([experience[1] for experience in batch], dtype=jnp.int32)
+        rewards = jnp.array([experience[2] for experience in batch],dtype=jnp.float32)
+        next_states = jnp.array([experience[3] for experience in batch]).astype(jnp.float32)
+        terminated = jnp.array([experience[4] for experience in batch],dtype=jnp.float32) 
+        truncated = jnp.array([experience[5] for experience in batch], dtype=jnp.float32) 
 
       
         def loss_function(params): #compute how far off the Q-network is from the Bellman target.
             current_q_values = self.network.apply(params, states) #q value of all actions
             current_q = current_q_values[jnp.arange(batch_size), actions] # q values of taken actions
 
-            next_q_values = self.network.apply(params, next_states) # second forward pass 
+            next_q_values = self.network.apply(params, next_states)
             max_next_q_value = jnp.max(next_q_values, axis=1)
 
             # Q-learning target: 
