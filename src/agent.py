@@ -6,11 +6,13 @@ from src.replay_buffer import ReplayBuffer
 import numpy as np
 
 class DQNAgent:
-    def __init__(self, state_dim, action_dim, learning_rate = 1e-3):
+    def __init__(self, state_dim, action_dim, learning_rate=1e-3, buffer_capacity=2000, gamma=0.99, epsilon=0.1):
         # set up
         self.network = DQN(action_dim)
-        self.replay_buffer = ReplayBuffer(capacity = 2000) #some high number?
+        self.replay_buffer = ReplayBuffer(capacity = buffer_capacity) #some high number?
         self.optimizer = optax.adam(learning_rate)
+        self.gamma = gamma
+        self.epsilon = epsilon
 
         # initialising network parameters
         key = jax.random.PRNGKey(0)
@@ -23,8 +25,8 @@ class DQNAgent:
         self.state_dim = state_dim
         self.action_dim = action_dim
 
-    def select_action(self, state, epsilon=0.1):
-        if np.random.uniform()< epsilon:
+    def select_action(self, state):
+        if np.random.uniform()< self.epsilon:
             action = np.random.choice(self.action_dim)
         else:
             q_values = self.network.apply(self.params, state)  
@@ -58,8 +60,7 @@ class DQNAgent:
             max_next_q_value = jnp.max(next_q_values, axis=1)
 
             # Q-learning target: 
-            gamma = 0.99 # future discount factor
-            target_q = rewards + gamma * max_next_q_value * (1-terminated) 
+            target_q = rewards + self.gamma * max_next_q_value * (1-terminated) 
                             
             # mean loss 
             loss = jnp.mean((current_q - target_q)**2)

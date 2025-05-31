@@ -2,11 +2,9 @@ from src.vect_env import VectorizedCartPole
 from src.agent import DQNAgent
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 
-def train():
-    os.makedirs('results', exist_ok=True)
-    
+
+def train():    
     # Create vectorized environment and agent
     env = VectorizedCartPole(num_envs=8)
     agent = DQNAgent(state_dim=4, action_dim=2)
