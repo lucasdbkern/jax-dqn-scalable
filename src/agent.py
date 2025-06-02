@@ -6,7 +6,7 @@ from src.replay_buffer import ReplayBuffer
 import numpy as np
 
 class DQNAgent:
-     """
+    """
     Deep Q-Network (DQN) agent with target network and experience replay.
     
     Implements the DQN algorithm from "Human-level control through deep 
