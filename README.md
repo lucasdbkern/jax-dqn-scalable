@@ -49,6 +49,8 @@ Which looked fine enough, given that it was only learning for 100 episodes. Past
 
  ![alt text](hyperparam_finished..png)
 
- After running another training round with these new sets of hyperparameters, we could see that indeed, stability had improved:
+ After running another training round with these new sets of hyperparameters and the addition of a target network, we could see that indeed, stability and performance had improved:
 
- 
+ ![alt text](results/training_results.png)
+
+ This little project of mine once again shows that there is a difference between understanding an algorithm on paper and going into the nitty gritty. Implementing always brings up unexpected challenges. Although there is still much more I could improve, such as additional tuning, code components such as double DQN etc which have been developed after the paper, what I have so far serves as a good baseline. 

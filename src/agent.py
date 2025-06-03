@@ -95,9 +95,9 @@ class DQNAgent:
             current_q = current_q_values[jnp.arange(batch_size), actions] # q values of taken actions
 
 
-            next_q_values = self.network.apply(self.target_params, next_states)
+            #next_q_values = self.network.apply(self.target_params, next_states)
 
-            #next_q_values = self.network.apply(params, next_states)
+            next_q_values = self.network.apply(params, next_states)
             max_next_q_value = jnp.max(next_q_values, axis=1)
 
             # Q-learning target: 
@@ -113,9 +113,9 @@ class DQNAgent:
         self.params = optax.apply_updates(self.params, updates) # apply updates to adjust model parameters 
 
         # Increment step counter and update target network
-        self.step_count += 1
-        if self.step_count % self.target_update_freq == 0:
-            self.target_params = self.params.copy()  # Simple copy!
+        #self.step_count += 1
+        #if self.step_count % self.target_update_freq == 0:
+        #    self.target_params = self.params.copy()  # Simple copy!
 
         return loss_value
 
